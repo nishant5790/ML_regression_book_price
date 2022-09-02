@@ -59,3 +59,16 @@ def athena_to_s3(session, params, max_execution = 5):
         time.sleep(30)
     
     return False
+
+def get_prod_bw_s3_path(dm_id):
+    client = boto3.client('athena')
+        
+    query = "Select * from table "
+    params = get_params(query)
+
+    session = boto3.Session()
+
+    # Query Athena and get the s3 filename as a result
+    s3_filename = athena_to_s3(session, params)
+    #cleanup(session, params)
+    return os.path.join('s3://', params['bucket'], params['path'], s3_filename)
